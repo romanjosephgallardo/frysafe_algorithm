@@ -1,0 +1,19 @@
+trial,cycle_number,oil_condition,red_frequency_hz,green_frequency_hz,blue_frequency_hz,turbidity_voltage_mv
+T1,0,New Oil (Baseline),1002,902,804,3005
+T1,1,1x Used Oil,948,846,735,2828
+T1,2,2x Used Oil,899,791,668,2651
+T1,3,3x Used Oil,846,735,599,2468
+T1,4,4x Used Oil,792,679,532,2287
+T1,5,5x Used Oil,704,602,405,2012
+T2,0,New Oil (Baseline),996,908,797,2992
+T2,1,1x Used Oil,943,851,729,2815
+T2,2,2x Used Oil,891,798,663,2638
+T2,3,3x Used Oil,839,741,594,2455
+T2,4,4x Used Oil,785,685,526,2274
+T2,5,5x Used Oil,698,608,398,1998
+T3,0,New Oil (Baseline),1005,895,808,3010
+T3,1,1x Used Oil,951,840,739,2833
+T3,2,2x Used Oil,903,785,671,2656
+T3,3,3x Used Oil,851,729,603,2473
+T3,4,4x Used Oil,797,674,536,2292
+T3,5,5x Used Oil,709,597,402,2017
