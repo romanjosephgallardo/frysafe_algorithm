@@ -1,0 +1,19 @@
+{
+    "calibration_method": "Three-trial mean",
+    "reference_cycles": {
+        "baseline": 0,
+        "maximum": 5
+    },
+    "baseline": {
+        "red": 1001.0,
+        "green": 901.6666666666666,
+        "blue": 803.0,
+        "turbidity": 3002.3333333333335
+    },
+    "maximum": {
+        "red": 703.6666666666666,
+        "green": 602.3333333333334,
+        "blue": 401.6666666666667,
+        "turbidity": 2009.0
+    }
+}
