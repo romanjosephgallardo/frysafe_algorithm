@@ -1,46 +1,44 @@
 
+import math
+
+
+REQUIRED_SENSORS = ["red", "green", "blue", "turbidity"]
+
+
 def compute_odi(normalized_readings):
     """
-    Calculate the FrySafe Oil Degradation Index (ODI).
+    Compute the FrySafe Oil Degradation Index (ODI).
 
     Formula:
         ODI = ((NR + NG + NB + NT) / 4) * 100
 
-    Parameters:
-        normalized_readings (dict):
-            {
-                "red": normalized red frequency,
-                "green": normalized green frequency,
-                "blue": normalized blue frequency,
-                "turbidity": normalized turbidity voltage
-            }
-
     Returns:
-        float: Oil Degradation Index (0 to 100).
+        float: ODI value between 0.0 and 100.0.
     """
 
-    required_sensors = ["red", "green", "blue", "turbidity"]
-
-    # Check if all required sensor values are present
-    for sensor in required_sensors:
-        if sensor not in normalized_readings:
-            raise ValueError(f"Missing normalized reading: {sensor}")
-
-    # Retrieve and validate normalized values
     values = []
 
-    for sensor in required_sensors:
+    for sensor in REQUIRED_SENSORS:
+
+        if sensor not in normalized_readings:
+            raise ValueError(
+                f"Missing normalized reading: {sensor}"
+            )
+
         value = float(normalized_readings[sensor])
+
+        if not math.isfinite(value):
+            raise ValueError(
+                f"Invalid normalized value for {sensor}: {value}"
+            )
 
         if not 0.0 <= value <= 1.0:
             raise ValueError(
-                f"Invalid normalized value for {sensor}: {value}. "
-                "Expected a value between 0 and 1."
+                f"Normalized value for {sensor} must be between 0 and 1."
             )
 
         values.append(value)
 
-    # Calculate the arithmetic mean and convert to a percentage
     odi = (sum(values) / len(values)) * 100
 
     return odi
@@ -48,7 +46,7 @@ def compute_odi(normalized_readings):
 
 if __name__ == "__main__":
 
-    # Sample normalized readings for testing only
+    # Sample normalized readings for software testing only
     sample_normalized_readings = {
         "red": 0.50,
         "green": 0.45,
@@ -58,11 +56,11 @@ if __name__ == "__main__":
 
     result = compute_odi(sample_normalized_readings)
 
-    print("\nFrySafe ODI Computation")
-    print("-----------------------")
+    print("\nFRYSAFE ODI COMPUTATION")
+    print("--------------------------------")
 
     for sensor, value in sample_normalized_readings.items():
         print(f"Normalized {sensor.capitalize()}: {value:.4f}")
 
-    print("-----------------------")
-    print(f"Oil Degradation Index (ODI): {result:.2f}")
+    print("--------------------------------")
+    print(f"Oil Degradation Index: {result:.2f}")

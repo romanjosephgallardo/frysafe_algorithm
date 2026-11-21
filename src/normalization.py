@@ -1,20 +1,17 @@
 
 import json
+import math
 from pathlib import Path
 
 
-# Locate the project directory
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Calibration file location
 CALIBRATION_FILE = BASE_DIR / "calibration" / "calibration.json"
+
+REQUIRED_SENSORS = ["red", "green", "blue", "turbidity"]
 
 
 def load_calibration():
-    """
-    Load baseline and maximum reference values
-    from the calibration JSON file.
-    """
+    """Load baseline and maximum values from calibration.json."""
 
     if not CALIBRATION_FILE.exists():
         raise FileNotFoundError(
@@ -29,13 +26,20 @@ def load_calibration():
 
 def normalize_value(value, baseline, maximum):
     """
-    Normalize a sensor reading using the calibration references.
+    Normalize a sensor reading using calibration references.
 
     Formula:
         N = (X - baseline) / (maximum - baseline)
 
-    The result is restricted to the range 0 to 1.
+    Output is restricted to the range 0.0 to 1.0.
     """
+
+    value = float(value)
+    baseline = float(baseline)
+    maximum = float(maximum)
+
+    if not all(math.isfinite(v) for v in [value, baseline, maximum]):
+        raise ValueError("Sensor readings and calibration values must be finite.")
 
     denominator = maximum - baseline
 
@@ -46,24 +50,11 @@ def normalize_value(value, baseline, maximum):
 
     normalized = (value - baseline) / denominator
 
-    # Keep normalized values within 0 to 1
-    normalized = max(0.0, min(1.0, normalized))
-
-    return normalized
+    return max(0.0, min(1.0, normalized))
 
 
 def normalize_readings(readings):
-    """
-    Normalize all four FrySafe sensor readings.
-
-    Expected input:
-        {
-            "red": value,
-            "green": value,
-            "blue": value,
-            "turbidity": value
-        }
-    """
+    """Normalize all four FrySafe sensor readings."""
 
     calibration = load_calibration()
 
@@ -72,7 +63,7 @@ def normalize_readings(readings):
 
     normalized_readings = {}
 
-    for sensor in ["red", "green", "blue", "turbidity"]:
+    for sensor in REQUIRED_SENSORS:
 
         if sensor not in readings:
             raise ValueError(f"Missing sensor reading: {sensor}")
@@ -81,9 +72,9 @@ def normalize_readings(readings):
             raise ValueError(f"Missing calibration reference: {sensor}")
 
         normalized_readings[sensor] = normalize_value(
-            value=float(readings[sensor]),
-            baseline=float(baseline[sensor]),
-            maximum=float(maximum[sensor])
+            readings[sensor],
+            baseline[sensor],
+            maximum[sensor]
         )
 
     return normalized_readings
@@ -91,7 +82,7 @@ def normalize_readings(readings):
 
 if __name__ == "__main__":
 
-    # Example sensor readings for testing only
+    # Sample readings for software testing only
     sample_readings = {
         "red": 850,
         "green": 750,
@@ -101,8 +92,8 @@ if __name__ == "__main__":
 
     results = normalize_readings(sample_readings)
 
-    print("\nFrySafe Normalization Results")
-    print("-----------------------------")
+    print("\nFRYSAFE NORMALIZATION RESULTS")
+    print("--------------------------------")
 
     for sensor, value in results.items():
         print(f"{sensor.capitalize()}: {value:.4f}")
